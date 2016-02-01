@@ -3,7 +3,7 @@
  */
 public class Solution {
 	public List<List<Integer>> pathSum(TreeNode root, int sum) {
-		// 4:06
+		// 4:06 - 5:02
 		List<List<Integer>> result = new ArrayList<List<Integer>>();
 		List<Integer> solution = new ArrayList<Integer>();
 
