@@ -1,50 +1,40 @@
 public class Solution {
-	public List<List<Integer>> verticalOrder(TreeNode root) {
-        	List<List<Integer>> res = new ArrayList<List<Integer>>();
-		if (root == null) {
-		    return res;
-		}
-
-		// left store
-		List<List<Integer>> left = new ArrayList<List<Integer>>();
-		List<List<Integer>> right = new ArrayList<List<Integer>>();
-		// add a dummy head to right
-		right.add(new ArrayList<Integer>(Integer.MAX_VALUE));       
-
-		dfs(root, 0, left, right);
-		for (int i = left.size() - 1; i >= 0; i--) {
-			res.add(left.get(i));
-		}
-		for (int i = 1; i < right.size(); i++) {
-			res.add(right.get(i));
-		}
-
-		return res;
-	}
-
-	private void dfs(TreeNode root, int width, List<List<Integer>> left, List<List<Integer>> right) {
-		if (root == null) {
-			return;
-		}
-
-		if (width >= 0) {
-			if (width + 1 > left.size()) {
-				List<Integer> col = new ArrayList<Integer>();
-				col.add(root.val);
-				left.add(col);			
-			} else {
-				left.get(width).add(root.val);
-			}
-		} else {
-			if (Math.abs(width) + 1 > right.size()) {
-				List<Integer> col = new ArrayList<Integer>();
-				col.add(root.val);
-				right.add(col);
-			} else {
-				right.get(Math.abs(width)).add(root.val);
-			}
-		}
-		dfs(root.left, width + 1, left, right);
-		dfs(root.right, width - 1, left, right);
-	}
+    public List<List<Integer>> verticalOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if(root == null) return res;
+    
+        Map<Integer, ArrayList<Integer>> map = new HashMap<>();
+        Queue<TreeNode> q = new LinkedList<>();
+        Queue<Integer> cols = new LinkedList<>();
+    
+        q.add(root); 
+        cols.add(0);
+    
+        int min = 0, max = 0;
+        while(!q.isEmpty()) {
+            TreeNode node = q.poll();
+            int col = cols.poll();
+            if(!map.containsKey(col)) {
+                map.put(col, new ArrayList<Integer>());
+            }
+            map.get(col).add(node.val);
+    
+            if(node.left != null) {
+                q.add(node.left); 
+                cols.add(col - 1);
+                if(col <= min) min = col - 1;
+            }
+            if(node.right != null) {
+                q.add(node.right);
+                cols.add(col + 1);
+                if(col >= max) max = col + 1;
+            }
+        }
+    
+        for(int i = min; i <= max; i++) {
+            res.add(map.get(i));
+        }
+    
+        return res;
+    }
 }
